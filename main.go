@@ -97,7 +97,36 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func logout(w http.ResponseWriter, r *http.Request) {}
+func logout(w http.ResponseWriter, r *http.Request) {
+	if err := Authorize(r); err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	// clear cookies
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_token",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HttpOnly: true,
+	})
+	http.SetCookie(w, &http.Cookie{
+		Name:     "csrf_token",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HttpOnly: false,
+	})
+
+	// clear stored token
+	username := r.FormValue("username")
+	user, _ := users[username]
+	user.SessionToken = ""
+	user.CSRFToken = ""
+	users[username] = user
+
+	fmt.Fprintln(w, "Logged out successfully!")
+
+}
 
 func protected(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
