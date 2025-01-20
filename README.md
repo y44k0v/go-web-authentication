@@ -9,10 +9,19 @@ Basic Go Authentication
 
  * usernames/passwords
   
-Registration: 
+**Registration**: 
 
 `$ curl -X POST -i -w '\n' "localhost:9080/register?username=y44k0v21&password=password123"`
 
-Login: 
+**Login**: 
 
 `$ curl -X POST -i -w '\n' "localhost:9080/login?username=y44k0v21&password=password123"`
+
+**Protected**:
+`$ curl -X POST -i -w '\n'  "localhost:9080/protected?username=y44k0v21&password=password123" \ -H "X-CSRF-Token:63x6go3IcOxPDgtXvsDpaiNuf-b1RaP0WTp9YjbPeeg=" \
+--cookie "session_token=LjQy0UZbeQHlyg0zptqQwgZ1Q2mWEfxYQKJt0njrWnQ="`
+
+**Logout**:
+`$ url -X POST -i -w '\n'  "localhost:9080/logout?username=yanky33&password=password123" -H "X-CSRF-Token:63x6go3IcOxPDgtXvsDpaiNuf-b1RaP0WTp9YjbPeeg=" \ 
+--cookie "session_token=LjQy0UZbeQHlyg0zptqQwgZ1Q2mWEfxYQKJt0njrWnQ="
+`
