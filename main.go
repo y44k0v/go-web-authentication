@@ -99,4 +99,18 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 func logout(w http.ResponseWriter, r *http.Request) {}
 
-func protected(w http.ResponseWriter, r *http.Request) {}
+func protected(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if err := Authorize(r); err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	username := r.FormValue("username")
+	fmt.Fprintf(w, "Welcome to the protected area, %s!\nCSRF validation successful.", username)
+
+}
